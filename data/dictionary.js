@@ -1,5 +1,5 @@
 ﻿const DICTIONARY = {
-    words: ['һөйөү', 'китап', 'мәктәп', 'ауыл', 'бәхет', 'илһам'], 
+    words: ['һөйөү', 'китап', 'бәхет', 'илһам'], 
  
     init() {
         fetch('data/dictionary.txt')
