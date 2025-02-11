@@ -1,107 +1,198 @@
-﻿class Game {
-  constructor() {
-      this.word = "";
-      this.attempts = [];
-      this.currentAttempt = "";
-      this.maxAttempts = 6;
-      this.isGameOver = false;
-      this.init();
-  }
+class Game {
+    constructor() {
+        this.word = "";
+        this.attempts = [];
+        this.currentAttempt = "";
+        this.maxAttempts = 6;
+        this.isGameOver = false;
+        this.eventListeners = new Map();
+        this.init();
+    }
 
-  init() {
-      const savedState = GameStorage.load();
-      if (savedState) {
-          Object.assign(this, savedState);
-      } else {
-          this.word = DICTIONARY.getRandomWord();
-      }
-      this.render();
-  }
+    init() {
+        const savedState = GameStorage.load();
+        if (savedState) {
+            Object.assign(this, savedState);
+        } else {
+            this.word = DICTIONARY.getRandomWord();
+        }
+        this.render();
+        this.emit('gameInit', { word: this.word });
+    }
 
-  addLetter(letter) {
-      if (this.currentAttempt.length < this.word.length && !this.isGameOver) {
-          this.currentAttempt += letter;
-          this.render();
-      }
-  }
+    // Event handling system
+    on(event, callback) {
+        if (!this.eventListeners.has(event)) {
+            this.eventListeners.set(event, new Set());
+        }
+        this.eventListeners.get(event).add(callback);
+    }
 
-  removeLetter() {
-      if (this.currentAttempt.length > 0) {
-          this.currentAttempt = this.currentAttempt.slice(0, -1);
-          this.render();
-      }
-  }
+    emit(event, data) {
+        if (this.eventListeners.has(event)) {
+            this.eventListeners.get(event).forEach(callback => callback(data));
+        }
+    }
 
-  submitAttempt() {
-      if (this.currentAttempt.length !== this.word.length) return;
-      if (!DICTIONARY.isValidWord(this.currentAttempt)) {
-          this.showMessage("Һүҙлектә юҡ!");
-          return;
-      }
+    addLetter(letter) {
+        if (this.currentAttempt.length < this.word.length && !this.isGameOver) {
+            this.currentAttempt += letter;
+            this.render();
+            this.emit('letterAdded', { letter, currentAttempt: this.currentAttempt });
+        }
+    }
 
-      this.attempts.push(this.currentAttempt);
-      
-      if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
-          this.isGameOver = true;
-          this.showMessage("Дөрөҫ!");
-      } else if (this.attempts.length >= this.maxAttempts) {
-          this.isGameOver = true;
-          this.showMessage(`Уйын бөттө! Һүҙ: ${this.word}`);
-      }
+    removeLetter() {
+        if (this.currentAttempt.length > 0) {
+            const removedLetter = this.currentAttempt.slice(-1);
+            this.currentAttempt = this.currentAttempt.slice(0, -1);
+            this.render();
+            this.emit('letterRemoved', { letter: removedLetter, currentAttempt: this.currentAttempt });
+        }
+    }
 
-      this.currentAttempt = "";
-      this.saveState();
-      this.render();
-  }
+    submitAttempt() {
+        if (this.currentAttempt.length !== this.word.length) {
+            this.showMessage("Һүҙ тулы түгел!", "warning");
+            return;
+        }
 
-  showMessage(text) {
-      const message = document.createElement("div");
-      message.className = "message";
-      message.textContent = text;
-      document.body.appendChild(message);
-      setTimeout(() => message.remove(), 2000);
-  }
+        if (!DICTIONARY.isValidWord(this.currentAttempt)) {
+            this.showMessage("Һүҙлектә юҡ!", "error");
+            this.emit('invalidWord', { attempt: this.currentAttempt });
+            return;
+        }
 
-  saveState() {
-      GameStorage.save({
-          word: this.word,
-          attempts: this.attempts,
-          currentAttempt: this.currentAttempt,
-          isGameOver: this.isGameOver
-      });
-  }
+        const attemptAnalysis = this.analyzeAttempt(this.currentAttempt);
+        this.attempts.push(this.currentAttempt);
+        
+        if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
+            this.isGameOver = true;
+            this.showMessage("Дөрөҫ!", "success");
+            this.emit('gameWon', { attempts: this.attempts.length });
+        } else if (this.attempts.length >= this.maxAttempts) {
+            this.isGameOver = true;
+            this.showMessage(`Уйын бөттө! Һүҙ: ${this.word}`, "info");
+            this.emit('gameLost', { word: this.word });
+        }
 
-  render() {
-      const board = document.getElementById("board");
-      board.innerHTML = "";
+        this.currentAttempt = "";
+        this.saveState();
+        this.render();
+        this.emit('attemptSubmitted', { attempt: attemptAnalysis });
+    }
 
-      for (let i = 0; i < this.maxAttempts; i++) {
-          const row = document.createElement("div");
-          row.className = "row";
+    analyzeAttempt(attempt) {
+        return attempt.split('').map((letter, index) => ({
+            letter,
+            status: this.getLetterStatus(letter, index)
+        }));
+    }
 
-          const attempt = i < this.attempts.length ? this.attempts[i] 
-                      : i === this.attempts.length ? this.currentAttempt 
-                      : "";
+    getLetterStatus(letter, position) {
+        if (letter.toLowerCase() === this.word[position].toLowerCase()) {
+            return 'correct';
+        }
+        if (this.word.toLowerCase().includes(letter.toLowerCase())) {
+            return 'present';
+        }
+        return 'absent';
+    }
 
-          for (let j = 0; j < this.word.length; j++) {
-              const tile = document.createElement("div");
-              tile.className = "tile";
-              
-              if (attempt[j]) {
-                  tile.textContent = attempt[j];
-                  if (i < this.attempts.length) {
-                      if (attempt[j].toLowerCase() === this.word[j].toLowerCase()) {
-                          tile.classList.add("correct");
-                      } else if (this.word.toLowerCase().includes(attempt[j].toLowerCase())) {
-                          tile.classList.add("present");
-                      } else {
-                          tile.classList.add("absent");
-                      }
-                  }
-              }
-              row.appendChild(tile);
-          }
-          board.appendChild(row);
-      }
-  }
+    showMessage(text, type = 'info') {
+        const message = document.createElement("div");
+        message.className = `message message-${type}`;
+        message.textContent = text;
+        
+        // Remove existing messages
+        document.querySelectorAll('.message').forEach(msg => msg.remove());
+        
+        document.body.appendChild(message);
+        setTimeout(() => message.remove(), 2000);
+        this.emit('messageShown', { text, type });
+    }
+
+    saveState() {
+        const state = {
+            word: this.word,
+            attempts: this.attempts,
+            currentAttempt: this.currentAttempt,
+            isGameOver: this.isGameOver
+        };
+        GameStorage.save(state);
+        this.emit('stateSaved', state);
+    }
+
+    render() {
+        const board = document.getElementById("board");
+        board.innerHTML = "";
+
+        for (let i = 0; i < this.maxAttempts; i++) {
+            const row = this.createRow(i);
+            board.appendChild(row);
+        }
+
+        this.emit('boardRendered', {
+            attempts: this.attempts,
+            currentAttempt: this.currentAttempt
+        });
+    }
+
+    createRow(rowIndex) {
+        const row = document.createElement("div");
+        row.className = "row";
+
+        const attempt = rowIndex < this.attempts.length ? this.attempts[rowIndex] 
+                    : rowIndex === this.attempts.length ? this.currentAttempt 
+                    : "";
+
+        for (let j = 0; j < this.word.length; j++) {
+            const tile = this.createTile(attempt, j, rowIndex);
+            row.appendChild(tile);
+        }
+
+        return row;
+    }
+
+    createTile(attempt, position, rowIndex) {
+        const tile = document.createElement("div");
+        tile.className = "tile";
+        
+        if (attempt[position]) {
+            tile.textContent = attempt[position];
+            if (rowIndex < this.attempts.length) {
+                tile.classList.add(this.getLetterStatus(attempt[position], position));
+            }
+        }
+
+        return tile;
+    }
+
+    // New methods for game statistics
+    getStatistics() {
+        return {
+            gamesPlayed: this.attempts.length > 0 ? 1 : 0,
+            currentStreak: this.isGameOver && !this.hasLost() ? 1 : 0,
+            averageAttempts: this.attempts.length,
+            winPercentage: this.hasWon() ? 100 : 0
+        };
+    }
+
+    hasWon() {
+        return this.isGameOver && this.attempts[this.attempts.length - 1].toLowerCase() === this.word.toLowerCase();
+    }
+
+    hasLost() {
+        return this.isGameOver && !this.hasWon();
+    }
+
+    reset() {
+        this.word = DICTIONARY.getRandomWord();
+        this.attempts = [];
+        this.currentAttempt = "";
+        this.isGameOver = false;
+        this.saveState();
+        this.render();
+        this.emit('gameReset', { word: this.word });
+    }
 }
