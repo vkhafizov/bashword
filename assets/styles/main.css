@@ -116,15 +116,32 @@ header {
 }
 
 @media (max-width: 500px) {
-  .tile {
-      width: 50px;
-      height: 50px;
-      font-size: 1.5rem;
-  }
+    body {
+        padding: 0.5rem;
+    }
+    
+    .key {
+        min-width: 25px;
+        height: 45px;
+        padding: 0 5px;
+        font-size: 14px;
+    }
 
-  .key {
-      height: 50px;
-      min-width: 30px;
-      font-size: 1rem;
-  }
+    .keyboard-row {
+        gap: 3px;
+    }
+
+    #keyboard {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        padding: 5px;
+    }
+
+    #board {
+        margin-bottom: 200px;
+    }
 }
+
