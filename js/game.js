@@ -70,10 +70,12 @@ class Game {
             this.isGameOver = true;
             this.showMessage("Дөрөҫ!", "success");
             this.emit('gameWon', { attempts: this.attempts.length });
+            setTimeout(() => this.reset(), 3000);
         } else if (this.attempts.length >= this.maxAttempts) {
             this.isGameOver = true;
             this.showMessage(`Уйын бөттө! Һүҙ: ${this.word}`, "info");
             this.emit('gameLost', { word: this.word });
+            setTimeout(() => this.reset(), 3000);
         }
 
         this.currentAttempt = "";
