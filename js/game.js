@@ -110,7 +110,7 @@ class Game {
         document.querySelectorAll('.message').forEach(msg => msg.remove());
         
         document.body.appendChild(message);
-        setTimeout(() => message.remove(), 8000);
+        setTimeout(() => message.remove(), 2500);
         this.emit('messageShown', { text, type });
     }
 
