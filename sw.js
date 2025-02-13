@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = "bashword-v4";
+﻿const CACHE_NAME = "bashword-v5";
 const ASSETS = [
   "/",
   "/index.html",
