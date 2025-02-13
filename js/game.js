@@ -1,3 +1,4 @@
+
 class Game {
     constructor() {
         this.word = "";
@@ -6,7 +7,6 @@ class Game {
         this.maxAttempts = 6;
         this.isGameOver = false;
         this.eventListeners = new Map();
-        this.letterStatuses = new Map();
         this.init();
     }
 
@@ -14,13 +14,11 @@ class Game {
         const savedState = GameStorage.load();
         if (savedState) {
             Object.assign(this, savedState);
-            this.letterStatuses = new Map(savedState.letterStatuses || []);
         } else {
             this.word = DICTIONARY.getRandomWord();
         }
         this.render();
         this.emit('gameInit', { word: this.word });
-        this.emit('letterStatusesUpdated', { letterStatuses: this.letterStatuses });
     }
 
     on(event, callback) {
@@ -53,21 +51,6 @@ class Game {
         }
     }
 
-    updateLetterStatuses(attempt) {
-        attempt.split('').forEach((letter, index) => {
-            const status = this.getLetterStatus(letter, index);
-            const currentStatus = this.letterStatuses.get(letter.toLowerCase());
-            
-            if (!currentStatus || 
-                (currentStatus === 'absent' && (status === 'present' || status === 'correct')) ||
-                (currentStatus === 'present' && status === 'correct')) {
-                this.letterStatuses.set(letter.toLowerCase(), status);
-            }
-        });
-        
-        this.emit('letterStatusesUpdated', { letterStatuses: this.letterStatuses });
-    }
-
     submitAttempt() {
         if (this.currentAttempt.length !== this.word.length) {
             this.showMessage("Һүҙ тулы түгел!", "warning");
@@ -82,8 +65,6 @@ class Game {
 
         const attemptAnalysis = this.analyzeAttempt(this.currentAttempt);
         this.attempts.push(this.currentAttempt);
-        
-        this.updateLetterStatuses(this.currentAttempt);
 
         if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
             this.isGameOver = true;
@@ -124,6 +105,7 @@ class Game {
         const message = document.createElement("div");
         message.className = `message message-${type}`;
         message.textContent = text;
+        
         document.querySelectorAll('.message').forEach(msg => msg.remove());
         document.body.appendChild(message);
         setTimeout(() => message.remove(), 2500);
@@ -135,8 +117,7 @@ class Game {
             word: this.word,
             attempts: this.attempts,
             currentAttempt: this.currentAttempt,
-            isGameOver: this.isGameOver,
-            letterStatuses: Array.from(this.letterStatuses.entries())
+            isGameOver: this.isGameOver
         };
         GameStorage.save(state);
         this.emit('stateSaved', state);
@@ -145,10 +126,12 @@ class Game {
     render() {
         const board = document.getElementById("board");
         board.innerHTML = "";
+        
         for (let i = 0; i < this.maxAttempts; i++) {
             const row = this.createRow(i);
             board.appendChild(row);
         }
+        
         this.emit('boardRendered', {
             attempts: this.attempts,
             currentAttempt: this.currentAttempt
@@ -158,24 +141,32 @@ class Game {
     createRow(rowIndex) {
         const row = document.createElement("div");
         row.className = "row";
-        const attempt = rowIndex < this.attempts.length ? this.attempts[rowIndex] :
-                       rowIndex === this.attempts.length ? this.currentAttempt : "";
+        
+        const attempt = rowIndex < this.attempts.length 
+            ? this.attempts[rowIndex] 
+            : rowIndex === this.attempts.length 
+                ? this.currentAttempt 
+                : "";
+
         for (let j = 0; j < this.word.length; j++) {
             const tile = this.createTile(attempt, j, rowIndex);
             row.appendChild(tile);
         }
+        
         return row;
     }
 
     createTile(attempt, position, rowIndex) {
         const tile = document.createElement("div");
         tile.className = "tile";
+        
         if (attempt[position]) {
             tile.textContent = attempt[position];
             if (rowIndex < this.attempts.length) {
                 tile.classList.add(this.getLetterStatus(attempt[position], position));
             }
         }
+        
         return tile;
     }
 
@@ -201,10 +192,8 @@ class Game {
         this.attempts = [];
         this.currentAttempt = "";
         this.isGameOver = false;
-        this.letterStatuses.clear();
         this.saveState();
         this.render();
         this.emit('gameReset', { word: this.word });
-        this.emit('letterStatusesUpdated', { letterStatuses: this.letterStatuses });
     }
 }
