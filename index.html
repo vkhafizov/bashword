@@ -42,7 +42,6 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #ff5a5f;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,7 +53,8 @@
   }
   </style>
   
-  <a href="result.html" class="result-button">🔥</a>
+  <a href="result.html?word=${game.word}&attempts=${game.attempts.length}&time=${Math.floor((Date.now() - game.startTime) / 1000)}" class="result-button">🔥</a>
+
   
 </body>
 </html>
