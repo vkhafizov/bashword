@@ -1,18 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="ba">
 <head>
-
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-66MPW4GG8B"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-66MPW4GG8B');
-</script>
-
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Башҡортса һүҙ уйыны</title>
@@ -23,14 +11,17 @@
 </head>
 <body>
   <div id="game-container">
-      <header>
-          <h1>Һүҙ уйыны</h1>
-      </header>
       <div id="game">
           <div id="board"></div>
           <div id="keyboard"></div>
       </div>
   </div>
+  <script>
+    if (!localStorage.getItem('selectedLevel')) {
+        window.location.href = 'levels.html';
+    }
+  </script>
+  <script src="js/header.js"></script>
   <script src="data/dictionary.js"></script>
   <script src="data/keyboard-layout.js"></script>
   <script src="js/storage.js"></script>

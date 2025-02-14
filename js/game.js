@@ -6,7 +6,25 @@ class Game {
         this.maxAttempts = 6;
         this.isGameOver = false;
         this.eventListeners = new Map();
+        this.letterStates = new Map(); // Добавляем отслеживание состояния букв
         this.init();
+        this.startTime = Date.now();
+    }
+
+    updateLetterStates(attempt) {
+        attempt.split('').forEach((letter, index) => {
+            const currentState = this.letterStates.get(letter.toLowerCase());
+            const newState = this.getLetterStatus(letter, index);
+            
+            // Обновляем состояние только если оно лучше предыдущего
+            if (!currentState || 
+                (currentState === 'absent' && (newState === 'present' || newState === 'correct')) ||
+                (currentState === 'present' && newState === 'correct')) {
+                this.letterStates.set(letter.toLowerCase(), newState);
+            }
+        });   
+        
+        this.emit('letterStatesUpdated', { letterStates: this.letterStates });
     }
 
     init() {
@@ -56,32 +74,70 @@ class Game {
             this.showMessage("Һүҙ тулы түгел!", "warning");
             return;
         }
-
         if (!DICTIONARY.isValidWord(this.currentAttempt)) {
             this.showMessage("Һүҙлектә юҡ!", "error");
             this.emit('invalidWord', { attempt: this.currentAttempt });
             return;
         }
-
-        const attemptAnalysis = this.analyzeAttempt(this.currentAttempt);
+    
         this.attempts.push(this.currentAttempt);
+        this.updateLetterStates(this.currentAttempt);
         
+        const timeTaken = Date.now() - this.startTime;
+        const historyParam = encodeURIComponent(JSON.stringify(this.attempts));
+        const gameStats = {
+            word: this.word,
+            attempts: this.attempts.length,
+            time: timeTaken
+        };
+    
         if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
             this.isGameOver = true;
             this.showMessage("Дөрөҫ!", "success");
             this.emit('gameWon', { attempts: this.attempts.length });
-            setTimeout(() => this.reset(), 9000);
+            setTimeout(() => {
+                window.location.href = `result.html?win=true&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}&history=${historyParam}`;
+            }, 1500);
         } else if (this.attempts.length >= this.maxAttempts) {
             this.isGameOver = true;
-            this.showMessage(`Уйын бөттө! Һүҙ: ${this.word}`, "info");
+            this.showMessage(`Уйын бөттө!`, "info");
             this.emit('gameLost', { word: this.word });
-            setTimeout(() => this.reset(), 9000);
+            setTimeout(() => {
+                window.location.href = `result.html?win=false&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}&history=${historyParam}`;
+            }, 1500);
         }
-
+    
         this.currentAttempt = "";
         this.saveState();
         this.render();
-        this.emit('attemptSubmitted', { attempt: attemptAnalysis });
+        this.emit('attemptSubmitted', { 
+            attempt: this.analyzeAttempt(this.attempts[this.attempts.length - 1])
+        });
+    
+    
+        if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
+            this.isGameOver = true;
+            this.showMessage("Дөрөҫ!", "success");
+            this.emit('gameWon', { attempts: this.attempts.length });
+            setTimeout(() => {
+                window.location.href = `result.html?win=true&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}`;
+            }, 1500);
+        } else if (this.attempts.length >= this.maxAttempts) {
+            this.isGameOver = true;
+            this.showMessage(`Уйын бөттө!`, "info");
+            this.emit('gameLost', { word: this.word });
+            setTimeout(() => {
+                const historyParam = encodeURIComponent(JSON.stringify(this.attempts));
+                window.location.href = `result.html?win=${this.currentAttempt.toLowerCase() === this.word.toLowerCase()}&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}&history=${historyParam}`;
+            }, 1500);
+        }
+    
+        this.currentAttempt = "";
+        this.saveState();
+        this.render();
+        this.emit('attemptSubmitted', { 
+            attempt: this.analyzeAttempt(this.attempts[this.attempts.length - 1])
+        });
     }
 
     analyzeAttempt(attempt) {
@@ -193,8 +249,10 @@ class Game {
         this.attempts = [];
         this.currentAttempt = "";
         this.isGameOver = false;
+        this.letterStates.clear(); // Очищаем состояния букв
         this.saveState();
         this.render();
         this.emit('gameReset', { word: this.word });
     }
 }
+
