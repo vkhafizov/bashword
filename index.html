@@ -54,13 +54,6 @@
   </style>
   
 <a href="#" class="result-button">🔥</a>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const resultButton = document.querySelector('.result-button');
-  resultButton.href = `result.html?word=${window.game.word}&attempts=${window.game.attempts.length}&time=${Math.floor((Date.now() - window.game.startTime) / 1000)}`;
-});
-</script>
   
 </body>
 </html>
