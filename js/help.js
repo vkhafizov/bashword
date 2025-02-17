@@ -26,13 +26,13 @@ class HelpModal {
           
           <div class="help-example">
             <div class="word-row">
-              <div class="letter-tile correct">Һ</div>
-              <div class="letter-tile">Ү</div>
+              <div class="letter-tile correct">Ҡ</div>
+              <div class="letter-tile">А</div>
+              <div class="letter-tile">Ғ</div>
+              <div class="letter-tile">Ы</div>
               <div class="letter-tile">Ҙ</div>
-              <div class="letter-tile">Е</div>
-              <div class="letter-tile">К</div>
             </div>
-            <p><strong>Һ</strong> хәрефе һүҙҙә бар һәм дөрөҫ урында тора.</p>
+            <p><strong>Ҡ</strong> хәрефе һүҙҙә бар һәм дөрөҫ урында тора.</p>
 
             <div class="word-row">
               <div class="letter-tile">Б</div>
