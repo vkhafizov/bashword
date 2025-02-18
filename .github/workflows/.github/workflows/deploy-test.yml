@@ -3,20 +3,24 @@ name: Deploy Test PWA
 on:
   push:
     branches:
-      - test  # Пушим в ветку test для деплоя
+      - test  # Запускаем при пуше в ветку test
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Клонируем репозиторий
+      - name: 📥 Клонируем репозиторий
+        uses: actions/checkout@v3
 
-      - run: npm install  # Устанавливаем зависимости
+      - name: 📦 Устанавливаем зависимости
+        run: npm install
 
-      - run: npm run build  # Собираем проект
+      - name: 🏗️ Собираем проект
+        run: npm run build
 
-      - uses: JamesIves/github-pages-deploy-action@v4  # Деплой на GitHub Pages
+      - name: 🚀 Деплоим тестовую версию
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          branch: main  # Деплой в ветку main 
-          folder: .  # Папка с результатами сборки
-          target-folder: test  # Разворачиваем в /test/ на Pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Деплой из корня
+          publish_branch: test  # Тестовая ветка для деплоя
