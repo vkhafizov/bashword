@@ -156,18 +156,13 @@ class Game {
         return 'absent';
     }
 
-    showMessage(text, type = 'info') {
-        const message = document.createElement("div");
-        message.className = `message message-${type}`;
-        message.textContent = text;
-        
-        // Remove existing messages
-        document.querySelectorAll('.message').forEach(msg => msg.remove());
-        
-        document.body.appendChild(message);
-        setTimeout(() => message.remove(), 2500);
-        this.emit('messageShown', { text, type });
-    }
+   showMessage(text, type = 'info') {
+    const message = document.createElement("div");
+    message.className = `message message-${type}`;
+    message.textContent = text;
+    document.body.appendChild(message);
+    setTimeout(() => message.remove(), 2500);
+}
 
     saveState() {
         const state = {
