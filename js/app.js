@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  await DICTIONARY.initPromise;
   window.game = new Game();
   const keyboard = new Keyboard(window.game);
   
