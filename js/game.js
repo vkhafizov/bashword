@@ -31,10 +31,6 @@ class Game {
         const savedState = GameStorage.load();
         if (savedState) {
             Object.assign(this, savedState);
-            if (savedState.letterStates) {
-                this.letterStates = new Map(savedState.letterStates);
-                this.emit('letterStatesUpdated', { letterStates: this.letterStates });
-            }
         } else {
             this.word = DICTIONARY.getRandomWord();
         }
