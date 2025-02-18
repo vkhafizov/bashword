@@ -1,0 +1,34 @@
+name: Deploy Test PWA
+
+on:
+  push:
+    branches:
+      - test  # Запускаем при пуше в test-ветку
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Клонируем репозиторий
+        uses: actions/checkout@v3
+
+      - name: 🔧 Устанавливаем Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Устанавливаем зависимости
+        run: npm install
+
+      - name: 🏗️ Собираем проект
+        run: npm run build
+
+      - name: 🚀 Деплоим тестовую версию
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages-test
+          folder: dist # или build, если React
+          target-folder: test # Разворачиваем в `/test/`
