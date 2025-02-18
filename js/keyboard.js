@@ -8,8 +8,8 @@ class Keyboard {
     }
 
     init() {
+        // Используем существующий div keyboard
         const keyboardContainer = document.getElementById("keyboard");
-        keyboardContainer.id = "keyboard-container";
         keyboardContainer.innerHTML = "";
 
         // Add confirm button
@@ -19,10 +19,7 @@ class Keyboard {
         this.confirmButton.addEventListener("click", () => this.game.submitAttempt());
         keyboardContainer.appendChild(this.confirmButton);
 
-        // Add keyboard
-        const keyboardDiv = document.createElement("div");
-        keyboardDiv.id = "keyboard";
-        
+        // Создаем ряды клавиатуры прямо в контейнере
         KEYBOARD_LAYOUT.forEach(row => {
             const rowEl = document.createElement("div");
             rowEl.className = "keyboard-row";
@@ -40,10 +37,8 @@ class Keyboard {
                 rowEl.appendChild(this.createSpecialKey("backspace"));
             }
             
-            keyboardDiv.appendChild(rowEl);
+            keyboardContainer.appendChild(rowEl);
         });
-
-        keyboardContainer.appendChild(keyboardDiv);
 
         // Add keyboard event listeners
         document.addEventListener("keydown", (e) => {
