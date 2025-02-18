@@ -73,19 +73,18 @@
   }
   
   .tile {
-  flex: 1;
-  width: min(64px, 7vh);
-  height: min(64px, 7vh);
-  border: 2px solid var(--color-border);
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: min(2rem, 3.5vh);
-  font-weight: 700;
-  text-transform: uppercase;
-  transition: var(--transition);
-  box-shadow: var(--shadow-sm);
+    aspect-ratio: 1/1; /* Ensures square tiles */
+    width: min(64px, 7vh);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: min(2rem, 3.5vh);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
   }
   
   .tile.correct {
@@ -129,7 +128,8 @@
   }
   
   .confirm-button {
-  width: 100%;
+  width: 75%;
+  align-self: center;
   padding: 1rem;
   border: none;
   border-radius: 8px;
@@ -149,24 +149,23 @@
   .keyboard-row {
   display: flex;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
   }
   
   .key {
-  flex: 1;
-  height: min(52px, 6vh);
-  min-width: min(40px, 5vh);
-  padding: 0 min(12px, 1.5vh);
-  border: none;
-  border-radius: 8px;
-  background-color: var(--color-border);
-  color: var(--color-text);
-  font-size: min(1.125rem, 2vh);
-  font-weight: 600;
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: var(--transition);
-  box-shadow: var(--shadow-sm);
+    width: calc(8vw - 4px);
+    height: min(48px, 12vw);
+    padding: 0 2px;
+    border: none;
+    border-radius: min(8px, 2vw);
+    background-color: var(--color-border);
+    color: var(--color-text);
+    font-size: min(1rem, 3vw);
+    font-weight: 600;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
   }
   
   .key:hover {
@@ -179,9 +178,9 @@
   transform: translateY(1px);
   }
   
-  .key-enter,
+  
   .key-backspace {
-  min-width: 70px;
+  width: 56px;
   font-size: 0.9rem;
   background-color: #cbd5e1;
   }
@@ -258,16 +257,15 @@
   }
   
   .key {
-  min-width: 28px;
-  height: 48px;
-  padding: 0 6px;
-  font-size: 0.875rem;
-  border-radius: 6px;
-  }
-  
+    width: min(28px, 6vw);
+    height: min(44px, 10vw);
+    padding: 0 min(2px, 0.5vw);
+    font-size: 0.875rem;
+    border-radius: 6px;
+   }
+ }
+
   .tile {
-  max-width: none;
-  max-height: none;
   width: 12vw;
   height: 12vw;
   font-size: 1.75rem;
