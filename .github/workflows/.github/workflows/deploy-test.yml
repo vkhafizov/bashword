@@ -1,0 +1,22 @@
+name: Deploy Test PWA
+
+on:
+  push:
+    branches:
+      - test  # Пушим в ветку test для деплоя
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3  # Клонируем репозиторий
+
+      - run: npm install  # Устанавливаем зависимости
+
+      - run: npm run build  # Собираем проект
+
+      - uses: JamesIves/github-pages-deploy-action@v4  # Деплой на GitHub Pages
+        with:
+          branch: main  # Деплой в ветку main 
+          folder: .  # Папка с результатами сборки
+          target-folder: test  # Разворачиваем в /test/ на Pages
