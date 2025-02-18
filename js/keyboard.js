@@ -42,9 +42,7 @@ class Keyboard {
 
         // Add keyboard event listeners
         document.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                this.game.submitAttempt();
-            } else if (e.key === "Backspace") {
+            if (e.key === "Backspace") {
                 this.game.removeLetter();
             } else if (KEYBOARD_LAYOUT.flat().includes(e.key.toLowerCase())) {
                 this.game.addLetter(e.key.toLowerCase());
