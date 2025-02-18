@@ -43,6 +43,4 @@ const DICTIONARY = {
 // Инициализируем словарь до запуска игры
 (async () => {
     await DICTIONARY.init();
-    const game = new Game();
-    const keyboard = new Keyboard(game);
 })();
