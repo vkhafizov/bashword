@@ -76,7 +76,6 @@ class Game {
         }
         if (!DICTIONARY.isValidWord(this.currentAttempt)) {
             this.showMessage("Һүҙлектә юҡ!", "error");
-            this.emit('invalidWord', { attempt: this.currentAttempt });
             return;
         }
     
