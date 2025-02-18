@@ -146,7 +146,6 @@ class Game {
             attempts: this.attempts,
             currentAttempt: this.currentAttempt,
             isGameOver: this.isGameOver
-            letterStates: Array.from(this.letterStates.entries())
         };
         GameStorage.save(state);
         this.emit('stateSaved', state);
