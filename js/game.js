@@ -31,8 +31,13 @@ class Game {
         const savedState = GameStorage.load();
         if (savedState) {
             Object.assign(this, savedState);
+            // Восстанавливаем Map из массива
+            this.letterStates = new Map(savedState.letterStates || []);
+            // Сообщаем клавиатуре о восстановленных состояниях
+            this.emit('letterStatesUpdated', { letterStates: this.letterStates });
         } else {
             this.word = DICTIONARY.getRandomWord();
+            this.letterStates = new Map();
         }
         this.render();
         this.emit('gameInit', { word: this.word });
@@ -140,16 +145,17 @@ class Game {
     setTimeout(() => message.remove(), 2500);
 }
 
-    saveState() {
-        const state = {
-            word: this.word,
-            attempts: this.attempts,
-            currentAttempt: this.currentAttempt,
-            isGameOver: this.isGameOver
-        };
-        GameStorage.save(state);
-        this.emit('stateSaved', state);
-    }
+saveState() {
+    const state = {
+        word: this.word,
+        attempts: this.attempts,
+        currentAttempt: this.currentAttempt,
+        isGameOver: this.isGameOver,
+        letterStates: Array.from(this.letterStates.entries()) // Сохраняем состояния букв
+    };
+    GameStorage.save(state);
+    this.emit('stateSaved', state);
+}
 
     render() {
         const board = document.getElementById("board");
@@ -225,4 +231,3 @@ class Game {
         this.emit('gameReset', { word: this.word });
     }
 }
-

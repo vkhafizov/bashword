@@ -11,7 +11,8 @@ class Keyboard {
         // Используем существующий div keyboard
         const keyboardContainer = document.getElementById("keyboard");
         keyboardContainer.innerHTML = "";
-
+        
+        
         // Add confirm button
         this.confirmButton = document.createElement("button");
         this.confirmButton.className = "confirm-button";
@@ -37,6 +38,13 @@ class Keyboard {
                 rowEl.appendChild(this.createSpecialKey("backspace"));
             }
             
+            const savedState = GameStorage.load();
+            if (savedState && savedState.letterStates) {
+            const letterStates = new Map(savedState.letterStates);
+            this.updateKeyboardColors(letterStates);
+        }
+
+
             keyboardContainer.appendChild(rowEl);
         });
 
