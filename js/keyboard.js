@@ -1,34 +1,51 @@
-﻿class Keyboard {
+class Keyboard {
     constructor(game) {
         this.game = game;
-        this.keyElements = new Map(); // Добавляем для подсветки
+        this.keyElements = new Map();
+        this.confirmButton = null;
         this.init();
-        this.setupGameListeners(); // Добавляем для подсветки
+        this.setupGameListeners();
     }
 
     init() {
-        const keyboard = document.getElementById("keyboard");
-        keyboard.innerHTML = "";
-        KEYBOARD_LAYOUT.forEach((row, i) => {
+        const keyboardContainer = document.getElementById("keyboard");
+        keyboardContainer.id = "keyboard-container";
+        keyboardContainer.innerHTML = "";
+
+        // Add confirm button
+        this.confirmButton = document.createElement("button");
+        this.confirmButton.className = "confirm-button";
+        this.confirmButton.textContent = "Тикшерергә";
+        this.confirmButton.addEventListener("click", () => this.game.submitAttempt());
+        keyboardContainer.appendChild(this.confirmButton);
+
+        // Add keyboard
+        const keyboardDiv = document.createElement("div");
+        keyboardDiv.id = "keyboard";
+        
+        KEYBOARD_LAYOUT.forEach(row => {
             const rowEl = document.createElement("div");
             rowEl.className = "keyboard-row";
-            if (i === KEYBOARD_LAYOUT.length - 1) {
-                rowEl.appendChild(this.createSpecialKey("enter"));
-            }
+            
             row.forEach(key => {
                 const button = document.createElement("button");
                 button.className = "key";
                 button.textContent = key;
                 button.addEventListener("click", () => this.game.addLetter(key));
-                this.keyElements.set(key.toLowerCase(), button); // Добавляем для подсветки
+                this.keyElements.set(key.toLowerCase(), button);
                 rowEl.appendChild(button);
             });
-            if (i === KEYBOARD_LAYOUT.length - 1) {
+
+            if (row === KEYBOARD_LAYOUT[KEYBOARD_LAYOUT.length - 1]) {
                 rowEl.appendChild(this.createSpecialKey("backspace"));
             }
-            keyboard.appendChild(rowEl);
+            
+            keyboardDiv.appendChild(rowEl);
         });
 
+        keyboardContainer.appendChild(keyboardDiv);
+
+        // Add keyboard event listeners
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 this.game.submitAttempt();
@@ -38,6 +55,18 @@
                 this.game.addLetter(e.key.toLowerCase());
             }
         });
+
+        // Add listener for current attempt changes
+        this.game.on('letterAdded', () => this.updateConfirmButton());
+        this.game.on('letterRemoved', () => this.updateConfirmButton());
+    }
+
+    updateConfirmButton() {
+        if (this.game.currentAttempt.length === this.game.word.length) {
+            this.confirmButton.classList.add('active');
+        } else {
+            this.confirmButton.classList.remove('active');
+        }
     }
 
     createSpecialKey(type) {
@@ -45,24 +74,19 @@
         const button = document.createElement("button");
         button.className = `key key-${type}`;
         button.textContent = key.text;
-        
-        if (type === "enter") {
-            button.addEventListener("click", () => this.game.submitAttempt());
-        } else if (type === "backspace") {
+        if (type === "backspace") {
             button.addEventListener("click", () => this.game.removeLetter());
         }
-        
         return button;
     }
 
-    // Добавляем новые методы для подсветки
     setupGameListeners() {
         this.game.on('letterStatesUpdated', ({ letterStates }) => {
             this.updateKeyboardColors(letterStates);
         });
-
         this.game.on('gameReset', () => {
             this.resetKeyboardColors();
+            this.updateConfirmButton();
         });
     }
 
