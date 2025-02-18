@@ -108,15 +108,48 @@ header h1 {
   opacity: 0.8;
 }
 
+#keyboard-container {
+display: flex;
+flex-direction: column;
+gap: 0.5rem;
+margin-top: auto;
+padding: 1rem;
+background-color: white;
+border-radius: 16px;
+box-shadow: var(--shadow-md);
+}
+
 #keyboard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: auto;
-  padding: 1rem;
-  background-color: white;
-  border-radius: 16px;
-  box-shadow: var(--shadow-md);
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.confirm-button {
+width: 100%;
+padding: 1rem;
+border: none;
+border-radius: 8px;
+font-size: 1.125rem;
+font-weight: 600;
+cursor: pointer;
+transition: var(--transition);
+margin-bottom: 0.5rem;
+color: white;
+background-color: rgba(74, 222, 128, 0.3);
+}
+
+.confirm-button.active {
+background-color: var(--color-correct);
+}
+
+.confirm-button:hover {
+transform: translateY(-1px);
+box-shadow: var(--shadow-md);
+}
+
+.confirm-button:active {
+transform: translateY(1px);
 }
 
 .keyboard-row {
