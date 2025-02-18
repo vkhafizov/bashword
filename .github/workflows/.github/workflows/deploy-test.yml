@@ -1,26 +1,21 @@
-name: Deploy Test PWA
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - test  # Запускаем при пуше в ветку test
+      - test  # Запускать деплой при пуше в ветку test
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 📥 Клонируем репозиторий
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: 📦 Устанавливаем зависимости
-        run: npm install
-
-      - name: 🏗️ Собираем проект
-        run: npm run build
-
-      - name: 🚀 Деплоим тестовую версию
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./  # Деплой из корня
-          publish_branch: test  # Тестовая ветка для деплоя
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}  # Токен для доступа к GitHub
+        publish_branch: main  # Указываем, что деплой будет в ветку main
+        publish_dir: .  # Публикация всего контента из корня репозитория
