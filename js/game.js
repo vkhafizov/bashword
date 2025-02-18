@@ -113,24 +113,6 @@ class Game {
             attempt: this.analyzeAttempt(this.attempts[this.attempts.length - 1])
         });
     
-    
-        if (this.currentAttempt.toLowerCase() === this.word.toLowerCase()) {
-            this.isGameOver = true;
-            this.showMessage("Дөрөҫ!", "success");
-            this.emit('gameWon', { attempts: this.attempts.length });
-            setTimeout(() => {
-                window.location.href = `result.html?win=true&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}`;
-            }, 1500);
-        } else if (this.attempts.length >= this.maxAttempts) {
-            this.isGameOver = true;
-            this.showMessage(`Уйын бөттө!`, "info");
-            this.emit('gameLost', { word: this.word });
-            setTimeout(() => {
-                const historyParam = encodeURIComponent(JSON.stringify(this.attempts));
-                window.location.href = `result.html?win=${this.currentAttempt.toLowerCase() === this.word.toLowerCase()}&word=${this.word}&attempts=${this.attempts.length}&time=${timeTaken}&history=${historyParam}`;
-            }, 1500);
-        }
-    
         this.currentAttempt = "";
         this.saveState();
         this.render();
