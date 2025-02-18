@@ -113,12 +113,6 @@ class Game {
             attempt: this.analyzeAttempt(this.attempts[this.attempts.length - 1])
         });
     
-        this.currentAttempt = "";
-        this.saveState();
-        this.render();
-        this.emit('attemptSubmitted', { 
-            attempt: this.analyzeAttempt(this.attempts[this.attempts.length - 1])
-        });
     }
 
     analyzeAttempt(attempt) {
