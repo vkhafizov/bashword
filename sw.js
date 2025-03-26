@@ -1,9 +1,8 @@
-﻿const CACHE_NAME = "bashword-v0.11.2";
+﻿const CACHE_NAME = "bashword-dev-v0.12";
 const ASSETS = [
   "/",
   "/index.html",
   "/result.html",
-  "/levels.html",
   "/assets/styles/main.css",
   "/assets/styles/help.css",
   "/assets/styles/game/game.css",
