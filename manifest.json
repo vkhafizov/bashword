@@ -4,9 +4,11 @@
   "id": "/",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#6aaa64",
   "description": "Был һүҙҙәрҙе табыу буйынса мауыҡтырғыс уйын.",
+  "dir": "ltr",
   "icons": [
     {
       "src": "assets/icons/icon-192x192.png",
@@ -19,6 +21,24 @@
       "type": "image/png"
     }
   ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/screen1.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "assets/screenshots/screen2.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "assets/screenshots/screen3.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["games", "puzzle", "word"],
   "launch_handler": {
     "client_mode": "navigate-existing"
   }
