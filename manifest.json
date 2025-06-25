@@ -3,12 +3,16 @@
   "short_name": "Һүҙ уйыны",
   "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay"],
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#6aaa64",
   "description": "Был һүҙҙәрҙе табыу буйынса мауыҡтырғыс уйын.",
+  "lang": "ba",
   "dir": "ltr",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "assets/icons/icon-192x192.png",
