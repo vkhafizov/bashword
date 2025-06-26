@@ -43,14 +43,10 @@
   <script src="js/app.js"></script>
   <script>
       if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("/sw.js");
+          navigator.serviceWorker.register("/bashword/sw.js");
       }
   </script>
-  <script>
-  if (typeof navigator.serviceWorker !== 'undefined') {
-    navigator.serviceWorker.register('sw.js')
-  }
-</script>
+
 <script src="js/help.js"></script>
   
 <a href="#" class="result-button"><img src="assets/pics/flag.svg" alt="Флаг" style="width: 24px; height: 24px;"></a>
